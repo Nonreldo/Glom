@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="sk">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Glom - Galéria</title>
+<link rel="icon" type="image/png" href="images/LogoKartaGlom.png">
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Arial,sans-serif;
+
+    background:
+    linear-gradient(
+    135deg,
+    #161616 0%,
+    #1d2235 35%,
+    #2a1f3f 70%,
+    #1d2d24 100%
+    );
+
+    background-attachment:fixed;
+
+    color:white;
+
+    overflow-x:hidden;
+}
+
+nav{
+    position:fixed;
+    top:0;
+    width:100%;
+    height:90px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 25px;
+
+    background:linear-gradient(90deg,#667eea,#764ba2,#55a34b);
+    background-size:300% 300%;
+    animation:gradientMove 8s infinite;
+
+    z-index:1000;
+
+    box-shadow:0 5px 15px rgba(0,0,0,0.5);
+}
+@keyframes gradientMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.logo img{
+    height: 140px;
+    width: auto;
+    object-fit: contain;
+    transition: 0.3s ease;
+}
+
+.logo img:hover{
+    transform: scale(1.05) rotate(-2deg);
+}
+
+nav ul{
+    display:flex;
+    gap:25px;
+    list-style:none;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+nav a:hover{
+    color:#00ffff;
+}
+
+/* ===================== */
+/* HERO */
+/* ===================== */
+
+header{
+    height:75vh;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+/* PRECHÁDZAJÚCE OBRÁZKY */
+
+.hero-slide{
+    position:absolute;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    opacity:0;
+    animation:heroFade 24s infinite;
+}
+
+.hero-slide::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+}
+
+.hero-slide:nth-child(1){
+    background-image:url('https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg');
+    animation-delay:0s;
+}
+
+.hero-slide:nth-child(2){
+    background-image:url('https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg');
+    animation-delay:6s;
+}
+
+.hero-slide:nth-child(3){
+    background-image:url('https://images.pexels.com/photos/177598/pexels-photo-177598.jpeg');
+    animation-delay:12s;
+}
+
+.hero-slide:nth-child(4){
+    background-image:url('https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg');
+    animation-delay:18s;
+}
+
+@keyframes heroFade{
+
+    0%{opacity:0;}
+    8%{opacity:1;}
+    25%{opacity:1;}
+    33%{opacity:0;}
+    100%{opacity:0;}
+
+}
+
+/* NADPIS GALÉRIA */
+
+.hero-title{
+    position:relative;
+    z-index:5;
+}
+
+.hero-title h1{
+    font-size:90px;
+    text-shadow:5px 5px 15px black;
+}
+
+/* ===================== */
+/* GALÉRIA */
+/* ===================== */
+
+.gallery{
+    padding:120px 20px 80px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.gallery a{
+    display:block;
+    overflow:hidden;
+    border-radius:14px;
+    box-shadow:0 5px 18px rgba(0,0,0,0.45);
+}
+
+.gallery img{
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    display:block;
+    transition:
+    transform 0.55s ease,
+    filter 0.55s ease;
+}
+
+/* HOVER */
+
+.gallery a:hover img{
+
+    transform:scale(1.18);
+
+    filter:
+    brightness(1.15)
+    contrast(1.08)
+    saturate(1.15);
+
+}
+
+/* ===================== */
+/* FADE */
+/* ===================== */
+
+.fade{
+    opacity:0;
+    transform:translateY(45px);
+    animation:fadeIn 1s forwards;
+    animation-timeline:view();
+    animation-range:entry 10%;
+}
+
+@keyframes fadeIn{
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* ===================== */
+/* LIGHTBOX */
+/* ===================== */
+
+.lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.93);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.lightbox:target{
+    display:flex;
+}
+
+/* KLIK MIMO OBRÁZKA */
+
+.lightbox .bg-close{
+    position:absolute;
+    inset:0;
+}
+
+/* OBRÁZOK */
+
+.lightbox img{
+    max-width:90vw;
+    max-height:90vh;
+    border-radius:14px;
+    z-index:3;
+}
+
+/* ŠÍPKY */
+
+.nav-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:70px;
+    color:white;
+    text-decoration:none;
+    z-index:4;
+    padding:20px;
+    user-select:none;
+}
+
+.prev{ left:20px; }
+.next{ right:20px; }
+
+/* X */
+
+.close{
+    position:absolute;
+    top:20px;
+    right:35px;
+    font-size:60px;
+    color:white;
+    text-decoration:none;
+    z-index:4;
+}
+
+/* ===================== */
+/* CONTACT */
+/* ===================== */
+
+.contact{
+
+    background:#2a2a2a;
+
+    padding:90px 30px;
+}
+
+.contact h2{
+
+    text-align:center;
+
+    margin-bottom:40px;
+
+    font-size:45px;
+
+    color:#a7c8ff;
+}
+
+.contact form{
+
+    max-width:700px;
+
+    margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+}
+
+.contact input,
+.contact textarea{
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-size:16px;
+}
+
+.contact button{
+
+    padding:16px;
+
+    border:none;
+
+    background:#667eea;
+
+    color:white;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:0.3s;
+}
+
+.contact button:hover{
+
+    background:#55a34b;
+}
+
+/* ===================== */
+/* FOOTER */
+/* ===================== */
+
+footer{
+
+    text-align:center;
+
+    padding:30px;
+
+    background:#111;
+}
+
+/* ===================== */
+/* RESPONSIVE */
+/* ===================== */
+
+@media(max-width:1000px){
+
+    .gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .hero-title h1{
+        font-size:60px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    nav{
+        height:auto;
+        padding:15px;
+        flex-direction:column;
+        align-items:center;
+        gap:10px;
+    }
+
+    .logo img{
+        height:45px;
+    }
+
+    nav ul{
+        flex-direction:row;
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:15px;
+    }
+
+    .hero-text h1{
+        font-size:50px;
+    }
+
+    .hero-text p{
+        font-size:18px;
+    }
+
+    .section{
+        padding:80px 20px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<nav>
+<div class="logo">
+    <img src="images/GlomLogo.png">
+</div>
+
+<ul>
+
+<li><a href="index.html">Domov</a></li>
+<li><a href="gallery.html">Galéria</a></li>
+<li><a href="products.html">Výrobky</a></li>
+
+</ul>
+
+</nav>
+
+<!-- HERO -->
+
+<header>
+
+<div class="hero-slide"></div>
+<div class="hero-slide"></div>
+<div class="hero-slide"></div>
+<div class="hero-slide"></div>
+
+<div class="hero-title">
+<h1>Galéria</h1>
+</div>
+
+</header>
+
+<!-- GALÉRIA -->
+
+<section class="gallery">
+
+<a class="fade" href="#img1"><img src="https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg"></a>
+<a class="fade" href="#img2"><img src="https://images.pexels.com/photos/177598/pexels-photo-177598.jpeg"></a>
+<a class="fade" href="#img3"><img src="https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg"></a>
+<a class="fade" href="#img4"><img src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg"></a>
+
+<a class="fade" href="#img5"><img src="https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg"></a>
+<a class="fade" href="#img6"><img src="https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg"></a>
+<a class="fade" href="#img7"><img src="https://images.pexels.com/photos/1591060/pexels-photo-1591060.jpeg"></a>
+<a class="fade" href="#img8"><img src="https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg"></a>
+
+<a class="fade" href="#img9"><img src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg"></a>
+<a class="fade" href="#img10"><img src="https://images.pexels.com/photos/5380664/pexels-photo-5380664.jpeg"></a>
+<a class="fade" href="#img11"><img src="https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg"></a>
+<a class="fade" href="#img12"><img src="https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg"></a>
+
+<a class="fade" href="#img13"><img src="https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg"></a>
+<a class="fade" href="#img14"><img src="https://images.pexels.com/photos/2101187/pexels-photo-2101187.jpeg"></a>
+<a class="fade" href="#img15"><img src="https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg"></a>
+<a class="fade" href="#img16"><img src="https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg"></a>
+
+</section>
+
+<!-- LIGHTBOX -->
+
+<div id="img1" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img16" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg">
+<a href="#img2" class="nav-btn next">›</a>
+</div>
+
+<div id="img2" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img1" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/177598/pexels-photo-177598.jpeg">
+<a href="#img3" class="nav-btn next">›</a>
+</div>
+
+<div id="img3" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img2" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg">
+<a href="#img4" class="nav-btn next">›</a>
+</div>
+<div id="img4" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img3" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg">
+<a href="#img5" class="nav-btn next">›</a>
+</div>
+
+<div id="img5" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img4" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg">
+<a href="#img6" class="nav-btn next">›</a>
+</div>
+
+<div id="img6" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img5" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg">
+<a href="#img7" class="nav-btn next">›</a>
+</div>
+
+<div id="img7" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img6" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/1591060/pexels-photo-1591060.jpeg">
+<a href="#img8" class="nav-btn next">›</a>
+</div>
+
+<div id="img8" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img7" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg">
+<a href="#img9" class="nav-btn next">›</a>
+</div>
+
+<div id="img9" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img8" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg">
+<a href="#img10" class="nav-btn next">›</a>
+</div>
+
+<div id="img10" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img9" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/5380664/pexels-photo-5380664.jpeg">
+<a href="#img11" class="nav-btn next">›</a>
+</div>
+
+<div id="img11" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img10" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg">
+<a href="#img12" class="nav-btn next">›</a>
+</div>
+
+<div id="img12" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img11" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg">
+<a href="#img13" class="nav-btn next">›</a>
+</div>
+
+<div id="img13" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img12" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg">
+<a href="#img14" class="nav-btn next">›</a>
+</div>
+
+<div id="img14" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img13" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/2101187/pexels-photo-2101187.jpeg">
+<a href="#img15" class="nav-btn next">›</a>
+</div>
+
+<div id="img15" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img14" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg">
+<a href="#img16" class="nav-btn next">›</a>
+</div>
+
+<div id="img16" class="lightbox">
+<a href="#" class="bg-close"></a>
+<a href="#" class="close">×</a>
+<a href="#img15" class="nav-btn prev">‹</a>
+<img src="https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg">
+<a href="#img1" class="nav-btn next">›</a>
+</div>
+
+<!-- ostatné lightboxy pokračujú rovnakým štýlom -->
+
+<!-- CONTACT -->
+
+<section class="contact fade">
+
+<h2>Kontaktujte Nás</h2>
+
+<form>
+
+<input type="text" placeholder="Vaše meno">
+
+<input type="email" placeholder="Váš email">
+
+<textarea rows="6" placeholder="Vaša správa"></textarea>
+
+<button type="submit">Odoslať správu</button>
+
+</form>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+<p>© 2026 Glom - Všetky práva (ne)vyhradené.</p>
+
+</footer>
+
+</body>
+</html>
